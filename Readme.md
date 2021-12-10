@@ -4,6 +4,8 @@ This is a recipe that stands up a VirtualBox VM based on a Pop!_OS distribution,
 
 This also works with MFA via Yubikey.
 
+KUDOS to Dr_J! (John Woodward). His runbook made this possible. [Original Source](https://doctorjw.wordpress.com/2021/11/30/globalprotect-vpn-with-openconnect/)
+
 ## Limitations
 * Copy/Paste does not work when starting via `vagrant up`. Once you've provisioned things, use the VirtualBox GUI to start the VM; the copy/paste works this way. 
 
