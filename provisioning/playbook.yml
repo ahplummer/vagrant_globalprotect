@@ -1,0 +1,90 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - ohmysh
+
+  tasks: 
+  - name: Install packages
+    apt:
+      name:
+      - apt-transport-https
+      - debconf-utils
+      - gnupg2
+      - python3-pip
+      - groff
+      - git
+      - libpq-dev
+      - python-dev
+      - libssl-dev
+      - build-essential
+      - libffi-dev
+      - wget
+      - curl
+      - unzip
+      - jq
+      - ca-certificates
+      - lsb-release
+      - gnupg
+      - golang-go
+      - tmux
+      - zsh
+      - vim
+      - nano
+      - ansible
+      - postgresql-client
+      - mysql-client
+      - python-setuptools
+      - openconnect
+      - python3-gi 
+      - gir1.2-gtk-3.0 
+      - gir1.2-webkit2-4.0
+      - python3.9-venv
+      - dkms 
+      - linux-headers-generic 
+      - linux-headers-5.11.0-7614-generic
+
+      state: latest
+      cache_valid_time: 3600    # update cache if more than an hour old
+
+  - name: Check if gp-saml-gui is installed
+    command: bash gp-saml-gui
+    register: gp_output
+    changed_when: no 
+    ignore_errors: yes
+
+  - name: Download GP-SAML-GUI
+    get_url:
+      url: https://github.com/dlenski/gp-saml-gui/archive/master.zip
+      dest: /home/vagrant/gp-saml-gui.zip
+      mode: '0440'
+    when: gp_output.rc > 0
+
+  - name: copy/overwrite login.sh
+    ansible.builtin.copy:
+      src: ./login.sh
+      dest: /home/vagrant/login.sh
+      owner: vagrant
+      group: vagrant
+      mode: '0777'    
+
+  - name: Install GP things
+    command: pip3 install /home/vagrant/gp-saml-gui.zip
+    when: gp_output.rc > 0
+
+  - name: Delete Resolvconf
+    file:
+      state: absent
+      path: /etc/resolv.conf
+    when: gp_output.rc > 0
+
+  - name: Create symbolic link for Resolvconf
+    file:
+      src: "/run/resolvconf/resolv.conf"
+      dest: "/etc/resolv.conf"
+      state: link
+    when: gp_output.rc > 0
+
+  - name: Fix up ResolvConf things
+    command: resolvconf -u
+    when: gp_output.rc > 0
