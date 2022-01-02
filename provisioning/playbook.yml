@@ -5,6 +5,13 @@
     - ohmysh
 
   tasks: 
+  - name: "Update cache & Full system update"
+    apt:
+      update_cache: true
+      upgrade: dist
+      cache_valid_time: 3600
+      force_apt_get: true
+
   - name: Install packages
     apt:
       name:
@@ -42,7 +49,7 @@
       - python3.9-venv
       - dkms 
       - linux-headers-generic 
-      - linux-headers-5.11.0-7614-generic
+      - linux-headers-5.15.8-76051508-generic
 
       state: latest
       cache_valid_time: 3600    # update cache if more than an hour old

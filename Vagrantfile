@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ahplummer/PopOS_21.10"
-  config.vm.box_version = "0.5.0"
+  config.vm.box_version = "0.6.0"
   config.vm.guest = "ubuntu"
   config.ssh.username = "vagrant"
   config.ssh.password = "vagrant"
